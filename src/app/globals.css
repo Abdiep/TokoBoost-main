@@ -1,26 +1,55 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* --- SETUP VARIABLE FONT --- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-inter: 'Inter', sans-serif;
+  --font-orbitron: 'Orbitron', sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0f1115;
+  color: #ffffff;
+  font-family: var(--font-inter);
+}
+
+/* KITA TETAP PERTAHANKAN CLASS PAKSA INI BIAR ICON TETAP AMAN */
+.forced-icon-size {
+  width: 64px !important;  
+  height: 64px !important;
+  min-width: 64px !important;
+  min-height: 64px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(31, 41, 55, 1);
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.forced-icon-size svg {
+  width: 32px !important;
+  height: 32px !important;
+  color: #ec4899;
+}
+
+/* Utilities Lainnya */
+.gradient-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #ec4899, #f97316);
+  font-weight: 700;
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron);
+}
+
+.glass-card {
+  background-color: rgba(31, 41, 55, 0.5);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
 }

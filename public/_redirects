@@ -1,0 +1,5 @@
+# public/_redirects
+
+# Aturan: Untuk request APAPUN (*), kirimkan index.html sebagai konten, 
+# tetapi jaga URL-nya agar tidak berubah (kode 200 OK).
+/* /index.html   200

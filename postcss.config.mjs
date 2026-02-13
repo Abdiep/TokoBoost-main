@@ -1,6 +1,8 @@
+/** @type {import('postcss-load-config').Config} */
 const config = {
   plugins: {
-    "@tailwindcss/postcss": {},
+    tailwindcss: {}, // <--- INI KUNCINYA (Versi 3 pakai ini)
+    autoprefixer: {},
   },
 };
 
