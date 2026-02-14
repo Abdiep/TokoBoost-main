@@ -22,14 +22,11 @@ const HeroSection = () => (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-600/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
         
         <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-            <div className="inline-block px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/10 backdrop-blur-sm mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <span className="text-xs md:text-sm font-bold text-pink-400 tracking-wider uppercase">✨ The #1 AI Super App for UMKM</span>
-            </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-orbitron text-white leading-tight tracking-tight drop-shadow-2xl">
-                Revolusi Bisnis <br />
+                Revolusi Bisnis UMKM Dengan  <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500">
-                    Tanpa Batas
+                    Kecerdasan AI
                 </span>
             </h1>
 
