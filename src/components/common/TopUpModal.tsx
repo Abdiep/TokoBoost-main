@@ -51,7 +51,7 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
 
         if (!document.getElementById(snapScriptId)) {
             const script = document.createElement("script");
-            script.src = "https://app.sandbox.midtrans.com/snap/snap.js"; 
+            script.src = "https://app.midtrans.com/snap/snap.js"; 
             script.id = snapScriptId;
             script.setAttribute("data-client-key", clientKey);
             script.async = true;
