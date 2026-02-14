@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Orbitron } from "next/font/google"; 
 import "./globals.css";
 import { AuthProvider } from "../context/AuthContext";
@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     },
   },
   keywords: ["AI generator, foto produk AI, video promosi, SOP generator, tools UMKM, tools hotelier, tokoboost, Content Creator Indonesia, AI untuk bisnis, AI untuk UMKM, dokumen HRD, AI marketing tools, platform AI Indonesia"],
-  themeColor: "#0f1115",
   openGraph: {
     type: "website",
     locale: "id_ID",
@@ -52,6 +51,9 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0f1115",
+};
 
 export default function RootLayout({
   children,
