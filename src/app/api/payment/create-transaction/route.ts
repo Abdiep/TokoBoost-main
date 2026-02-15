@@ -4,7 +4,7 @@ import Midtrans from 'midtrans-client';
 // Inisialisasi Midtrans Snap
 const snap = new Midtrans.Snap({
     isProduction: false, // Pastikan FALSE untuk Sandbox
-    serverKey: process.env.NEXT_PUBLIC_MIDTRANS_SERVER_KEY || "", 
+    serverKey: process.env.MIDTRANS_SERVER_KEY || "", 
     clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
 });
 

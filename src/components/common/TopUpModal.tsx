@@ -17,8 +17,7 @@ interface MidtransResult {
     fraud_status?: string;
 }
 
-// 2. Interface Khusus untuk Snap (Pengganti 'any')
-// Ini memberitahu TypeScript bahwa Snap punya method .pay()
+// 2. Interface Khusus untuk Snap
 interface SnapDispatcher {
     pay: (token: string, options: {
         onSuccess: (result: MidtransResult) => void;
@@ -37,12 +36,16 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
     const { user, addTokens } = useAuth(); 
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- Load Script Midtrans ---
+    // --- Load Script Midtrans (DIPERBAIKI) ---
     useEffect(() => {
         if (!isOpen) return;
 
         const snapScriptId = 'midtrans-snap-script';
         const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
+        
+        // Cek apakah mode Production atau Sandbox
+        // Pastikan kamu set variable ini di Vercel: 'true' untuk Production, 'false' untuk Sandbox
+        const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
 
         if (!clientKey) {
             console.error("❌ MIDTRANS CLIENT KEY BELUM DISET DI .env.local!");
@@ -51,7 +54,13 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
 
         if (!document.getElementById(snapScriptId)) {
             const script = document.createElement("script");
-            script.src = "https://app.midtrans.com/snap/snap.js"; 
+            
+            // LOGIC DINAMIS: Pilih URL berdasarkan Environment
+            const snapUrl = isProduction 
+                ? "https://app.midtrans.com/snap/snap.js"        // URL Production
+                : "https://app.sandbox.midtrans.com/snap/snap.js"; // URL Sandbox
+
+            script.src = snapUrl; 
             script.id = snapScriptId;
             script.setAttribute("data-client-key", clientKey);
             script.async = true;
@@ -71,6 +80,7 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
             }
 
             const orderId = `TKB-${user.name?.split(' ')[0] || 'User'}-${Date.now()}`;
+            // Hapus titik dari format harga (misal "15.000" jadi 15000)
             const amount = parseInt(pkg.price.replace(/\./g, '')); 
 
             const transactionData = {
@@ -95,10 +105,8 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
                 throw new Error(data.message || 'Gagal membuat transaksi');
             }
 
-            // --- BAGIAN YANG DIPERBAIKI (LINE 97) ---
-            // Kita cek keberadaan window.snap, lalu cast ke interface 'SnapDispatcher'
+            // Eksekusi Snap
             if (window.snap) {
-                // Gunakan casting ke tipe khusus, bukan 'any'
                 (window.snap as unknown as SnapDispatcher).pay(data.token, {
                     onSuccess: (result: MidtransResult) => {
                         console.log('Payment Success:', result);
