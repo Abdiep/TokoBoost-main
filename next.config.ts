@@ -3,11 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      {
-        source: '/Dashboard',
-        destination: '/dashboard',
-        permanent: true,
-      },
+
       // Format: { source: 'Link Lama', destination: 'Link Baru', permanent: true }
       {
         source: '/flyer_promosi',
