@@ -3,24 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
-      // 1. Redirect Halaman Privasi
-      {
-        source: '/privasi',       // Link Lama (yang terlanjur ke-index)
-        destination: '/privacy',  // Link Baru
-        permanent: true,          // PENTING: Memberitahu Google ini pindah selamanya
-      },
-      // 2. Redirect Dashboard (Huruf Besar ke Kecil)
-      {
-        source: '/Dashboard',     // Link Lama (Typo/Huruf Besar)
-        destination: '/dashboard',// Link Baru (Huruf Kecil)
-        permanent: true,
-      },
-      // 3. Tambahan (Opsional) kalau ada halaman lain yg berubah
-      {
-        source: '/syarat-ketentuan',
-        destination: '/terms',
-        permanent: true,
-      },
+
       // Format: { source: 'Link Lama', destination: 'Link Baru', permanent: true }
       {
         source: '/flyer_promosi',
