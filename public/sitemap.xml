@@ -38,7 +38,7 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/syarat-dan-ketentuan</loc>
+    <loc>https://www.tokoboost.com/terms</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
@@ -51,49 +51,49 @@
   </url>
 
   <url>
-    <loc>https://www.tokoboost.com/flyer_promosi</loc>
+    <loc>https://www.tokoboost.com/flyer</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/video_produk</loc>
+    <loc>https://www.tokoboost.com/video</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/studio_photo</loc>
+    <loc>https://www.tokoboost.com/studio</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/pre-wedding_image</loc>
+    <loc>https://www.tokoboost.com/wedding</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/kartun_photo</loc>
+    <loc>https://www.tokoboost.com/cartoon</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/hook_video</loc>
+    <loc>https://www.tokoboost.com/hook</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/opening_video_youtube</loc>
+    <loc>https://www.tokoboost.com/opening</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/resep</loc>
+    <loc>https://www.tokoboost.com/recipe</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -105,7 +105,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokoboost.com/job_description</loc>
+    <loc>https://www.tokoboost.com/jobdesc</loc>
     <lastmod>2026-01-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
