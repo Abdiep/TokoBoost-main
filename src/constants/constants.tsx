@@ -503,7 +503,7 @@ export const STUDIO_PHOTO_BACKGROUNDS = [
     lensEffect: "35mm f/2.0 indoor clarity.",
     fxDetail: "Lamp glow, soft carpet reflection.",
     moodTone: "Sacred, calm, reverent.",
-    exampleImageUrl: "/studio/latar-belakang-masjid-nabawi.webp",
+    exampleImageUrl: "/studio/dalam-masjid-nabawi.webp",
     width: 1024,
     height: 1024,
   },
