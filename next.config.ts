@@ -26,11 +26,11 @@ const nextConfig: NextConfig = {
         destination: '/about',
         permanent: true,
       },
-      {
-        source: '/Dashboard', 
-        destination: '/dashboard',
-        permanent: true,
-      },
+      //{
+        //source: '/Dashboard', 
+        //destination: '/dashboard',
+        //permanent: true,
+      //},
 
       // --- TOOLS DASHBOARD (Perbaikan Tujuan) ---
       {
