@@ -1,17 +1,45 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /* config options here */
+  
   async redirects() {
     return [
+      // --- HALAMAN UTAMA ---
+      {
+        source: '/syarat-dan-ketentuan', 
+        destination: '/terms',
+        permanent: true,
+      },
+      {
+        source: '/privasi', 
+        destination: '/privacy',
+        permanent: true,
+      },
+      {
+        source: '/kontak', 
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/tentang', 
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/Dashboard', 
+        destination: '/dashboard',
+        permanent: true,
+      },
 
-      // Format: { source: 'Link Lama', destination: 'Link Baru', permanent: true }
+      // --- TOOLS DASHBOARD (Perbaikan Tujuan) ---
       {
         source: '/flyer_promosi',
         destination: '/dashboard/flyer',
-        permanent: true, // 301 Redirect (SEO Friendly)
+        permanent: true,
       },
       {
-        source: '/product_video',
+        source: '/video_produk',
         destination: '/dashboard/video',
         permanent: true,
       },
@@ -22,21 +50,21 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/studio_photo',
-        destination: '/dashboard/studio',
+        destination: '/dashboard/foto', // ✅ KOREKSI: Sesuai sitemap (/foto)
         permanent: true,
       },
       {
-        source: '/cartoon_photo',
+        source: '/kartun_photo',
         destination: '/dashboard/cartoon',
         permanent: true,
       },
       {
-        source: '/pre_wedding_image',
-        destination: '/dashboard/prewedding',
+        source: '/pre-wedding_image',
+        destination: '/dashboard/wedding', // ✅ KOREKSI: Sesuai sitemap (/wedding)
         permanent: true,
       },
       {
-        source: '/opening_video',
+        source: '/opening_video_youtube',
         destination: '/dashboard/opening',
         permanent: true,
       },
@@ -46,11 +74,10 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/recipe',
+        source: '/resep',
         destination: '/dashboard/recipe',
         permanent: true,
       },
-      // SOP tidak perlu karena path-nya sama (/sop -> /dashboard/sop jika kamu pindah ke dashboard)
       {
         source: '/sop',
         destination: '/dashboard/sop',
