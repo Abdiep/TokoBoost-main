@@ -51,7 +51,7 @@ const FeatureCard: React.FC<{
 const features = [
     { title: "Flyer Promosi", desc: "Buat flyer promosi profesional untuk produk Anda.", icon: <IconFlyer />, path: "/dashboard/flyer", img: "/imageDashboard/Card-Flyer.webp" },
     { title: "Video Produk", desc: "Generate video produk 5 detik dari gambar.", icon: <IconProductVideo />, path: "/dashboard/video", img: "/imageDashboard/product-Card.webp" },
-    { title: "Studio Foto AI", desc: "Hasilkan foto studio berkualitas tinggi dari wajah Anda.", icon: <IconStudioPhoto />, path: "/dashboard/studio", img: "/imageDashboard/Card-Studio.webp" },
+    { title: "Studio Foto AI", desc: "Hasilkan foto studio berkualitas tinggi dari wajah Anda.", icon: <IconStudioPhoto />, path: "/dashboard/foto", img: "/imageDashboard/Card-Studio.webp" },
     { title: "Prewedding AI", desc: "Hasilkan foto pre-wedding impian dari foto Anda.", icon: <IconPrewedding />, path: "/dashboard/wedding", img: "/imageDashboard/pw-Card.webp" },
     { title: "Kartun Avatar", desc: "Ubah foto Anda menjadi gaya kartun/anime.", icon: <IconCartoon />, path: "/dashboard/cartoon", img: "/imageDashboard/Card-Cartoon.webp" },
     { title: "Hook Video", desc: "Generate hook video menarik untuk konten Anda.", icon: <IconHookVideo />, path: "/dashboard/hook", img: "/imageDashboard/hook-Card.webp" },
