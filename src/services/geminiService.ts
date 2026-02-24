@@ -5,7 +5,7 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 
 // Ambil API Key dengan aman (Fallback ke string kosong biar TS gak marah)
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+const API_KEY = process.env.GEMINI_API_KEY || "";
 
 if (!API_KEY) {
   console.error("⚠️ API Key Gemini belum diset di .env.local!");
