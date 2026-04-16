@@ -52,10 +52,10 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
 
     return (
         <div className={`text-center my-4 overflow-hidden ${className}`} style={{ minHeight: '90px', ...style }}>
-            {/* ID Publisher Kamu: ca-pub-6221594639128289 */}
+            {/* ID Publisher Kamu: ca-pub-5393983769738586 */}
             <ins className="adsbygoogle"
                  style={{ display: 'block' }}
-                 data-ad-client="ca-pub-6221594639128289" 
+                 data-ad-client="ca-pub-5393983769738586" 
                  data-ad-slot={adSlot}
                  data-ad-format={adFormat}
                  data-full-width-responsive={fullWidthResponsive}></ins>

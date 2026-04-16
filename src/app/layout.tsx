@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6221594639128289" crossOrigin="anonymous"></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5393983769738586" crossOrigin="anonymous"></script>
       </head>
       <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased bg-[#0f1115] text-white`}>
         <AuthProvider>
