@@ -5,7 +5,7 @@ export const Footer = () => {
     return (
         <footer className="bg-[#0a0c10] border-t border-white/5 pt-16 pb-8 text-sm">
             <div className="container mx-auto px-4 md:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
                     
                     {/* Brand Section */}
                     <div className="space-y-4">
@@ -53,6 +53,14 @@ export const Footer = () => {
                             <li><Link href="/privacy" className="text-gray-400 hover:text-pink-500 transition-colors">Kebijakan Privasi</Link></li>
                             <li><Link href="/terms" className="text-gray-400 hover:text-pink-500 transition-colors">Syarat & Ketentuan</Link></li>
                             <li><Link href="/disclaimer" className="text-gray-400 hover:text-pink-500 transition-colors">Disclaimer</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Partner Links */}
+                    <div>
+                        <h4 className="text-white font-bold mb-4 font-orbitron">Partner</h4>
+                        <ul className="space-y-2">
+                            <li><Link href="https://www.silsilahnusantara.id/" className="text-gray-400 hover:text-pink-500 transition-colors">SilsilahNusantara.id</Link></li>
                         </ul>
                     </div>
                 </div>
