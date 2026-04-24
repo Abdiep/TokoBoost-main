@@ -2,8 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+// 1. Import hook untuk mendeteksi URL saat ini
+import { usePathname } from 'next/navigation'; 
 
 export const Header: React.FC = () => {
+    // 2. Inisialisasi pathname
+    const pathname = usePathname(); 
+
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProductOpen, setProductOpen] = useState(false);
@@ -25,6 +30,12 @@ export const Header: React.FC = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    // 3. LOGIKA SAKTI: Jika URL diawali dengan '/dashboard', header publik ini tidak akan muncul.
+    // Ini otomatis akan menghilangkan double header di halaman affiliate baru lu.
+    if (pathname?.startsWith('/dashboard')) {
+        return null;
+    }
+
     return (
         <header 
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${
@@ -32,10 +43,9 @@ export const Header: React.FC = () => {
             }`}
         >
             <nav className="container mx-auto px-4 md:px-8">
-                {/* FLEX CONTAINER BARU: 3 KOLOM SEIMBANG */}
                 <div className="flex items-center justify-between h-12">
                     
-                    {/* KOLOM 1: LOGO (Mengambil ruang sisa di kiri) */}
+                    {/* KOLOM 1: LOGO */}
                     <div className="flex-1 flex justify-start">
                         <Link href="/" className="flex items-center gap-2 group">
                             <span className="text-xl md:text-2xl font-bold font-orbitron gradient-text tracking-wide">
@@ -44,7 +54,7 @@ export const Header: React.FC = () => {
                         </Link>
                     </div>
 
-                    {/* KOLOM 2: MENU TENGAH (Lebar pas konten) */}
+                    {/* KOLOM 2: MENU TENGAH */}
                     <div className="hidden md:flex items-center gap-8">
                         <Link href="/" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                             Beranda
@@ -82,7 +92,7 @@ export const Header: React.FC = () => {
                         </Link>
                     </div>
 
-                    {/* KOLOM 3: TOMBOL KANAN (Mengambil ruang sisa di kanan) */}
+                    {/* KOLOM 3: TOMBOL KANAN */}
                     <div className="flex-1 flex justify-end items-center gap-4">
                         <div className="hidden md:flex items-center gap-4">
                             <Link href="/dashboard" className="px-5 py-2 bg-gradient-to-r from-pink-600 to-orange-600 text-white text-sm font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
@@ -106,10 +116,9 @@ export const Header: React.FC = () => {
                     <div className="md:hidden mt-4 bg-[#1a1d24] rounded-xl border border-white/10 p-4 animate-in slide-in-from-top-2">
                         <nav className="flex flex-col gap-2">
                             <Link href="/" className="px-4 py-3 rounded-lg bg-white/5 text-white font-medium">Beranda</Link>
-                            <Link href="/blog" className="px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300">Blog Edukasi</Link>
+                            <Link href="https://blog.tokoboost.com" className="px-4 py-3 rounded-lg hover:bg-white/5 text-gray-300">Blog Edukasi</Link>
                             <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
-                                <Link href="/login" className="flex-1 py-2 text-center text-gray-300 bg-gray-800 rounded-lg">Masuk</Link>
-                                <Link href="/register" className="flex-1 py-2 text-center bg-pink-600 text-white rounded-lg font-bold">Daftar</Link>
+                                <Link href="/dashboard" className="flex-1 py-2 text-center bg-pink-600 text-white rounded-lg font-bold">Mulai Sekarang</Link>
                             </div>
                         </nav>
                     </div>
