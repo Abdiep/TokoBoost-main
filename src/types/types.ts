@@ -32,7 +32,7 @@ export interface AuthContextType {
   logout: () => Promise<void>;
   
   // Kita ganti namanya biar lebih modern sesuai kodingan Supabase tadi
-  useTokens: (amount: number) => Promise<boolean>; 
+  deductTokens: (amount: number) => Promise<boolean>; 
   addTokens: (amount: number) => Promise<void>; 
   
   // Jika lu butuh setTokens manual untuk state lokal (opsional)

@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
   }, []);
 
-  const useTokens = useCallback(async (amount: number): Promise<boolean> => {
+  const deductTokens = useCallback(async (amount: number): Promise<boolean> => {
     if (tokens >= amount) {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) return false;
@@ -128,10 +128,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     tokens, 
     login, 
     logout, 
-    useTokens, 
+    deductTokens, 
     addTokens,
     setTokens 
-  }), [isLoggedIn, user, tokens, login, logout, useTokens, addTokens]);
+  }), [isLoggedIn, user, tokens, login, logout, deductTokens, addTokens]);
 
   return (
     <AuthContext.Provider value={authContextValue}>
