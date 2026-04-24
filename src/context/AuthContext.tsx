@@ -15,19 +15,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [tokens, setTokens] = useState(0);
 
   useEffect(() => {
-    // Cek sesi saat pertama kali web dibuka
+    // 1. Cek sesi saat pertama kali web dibuka
     const fetchSession = async () => {
-      console.log("1. Mengecek sesi aktif...");
+      console.log("Mengecek sesi aktif...");
       const { data: { session } } = await supabase.auth.getSession();
       handleSession(session);
     };
 
-    // Fungsi untuk memproses sesi
+    // 2. Fungsi utama pemroses sesi & profil
     const handleSession = async (session: any) => {
       if (session) {
-        console.log("2. Sesi Google ditemukan! Mencari profil di DB...", session.user.id);
         const { user: supaUser } = session;
 
+        // Ambil data dari tabel profiles
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('*')
@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (profile) {
-          console.log("3. Profil ditemukan! Login sukses.", profile);
+          // Profil lengkap, set state login
           setIsLoggedIn(true);
           setUser({
             uid: supaUser.id,
@@ -49,14 +49,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           setTokens(profile.tokens);
         } else {
-          console.log("🚨 Profil tidak ada di DB, memaksa logout...");
+          // Self-Healing: Token ada di browser tapi data di DB kosong -> Paksa Logout
+          console.log("🚨 Profil tidak ada di DB, membersihkan cache...");
           await supabase.auth.signOut();
           setIsLoggedIn(false);
           setUser(null);
           setTokens(0);
         }
       } else {
-        console.log("X. Tidak ada sesi aktif.");
+        // Tidak ada yang login
         setIsLoggedIn(false);
         setUser(null);
         setTokens(0);
@@ -65,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     fetchSession();
 
-    // Pantau jika ada perubahan login/logout
+    // 3. Listener: Pantau jika ada proses login/logout berjalan di background
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       handleSession(session);
     });
@@ -73,14 +74,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
+  // --- FUNGSI UTAMA ---
+
   const login = useCallback(async () => {
-    const { error: loginError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/dashboard`,
-      },
-    });
-    if (loginError) console.error("Login Error:", loginError.message);
+    try {
+      const { error: loginError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          // Pastikan redirect selalu kembali ke domain origin yang benar (Localhost/Vercel)
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+      if (loginError) throw loginError;
+    } catch (error: any) {
+      console.error("Login Error:", error.message);
+      alert("Gagal terhubung ke Google. Silakan coba lagi.");
+    }
   }, []);
 
   const logout = useCallback(async () => {
@@ -122,6 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!addError) setTokens(newAmount);
   }, [tokens]);
 
+  // Bungkus context value agar tidak re-render berlebihan
   const authContextValue = useMemo(() => ({
     isLoggedIn, 
     user, 
