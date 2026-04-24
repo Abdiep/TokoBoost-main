@@ -13,31 +13,33 @@ export enum Feature {
   JOB_DESC = 'Job Description',
 }
 
+// src/types/types.ts
+
+// ... (bagian Feature enum biarkan tetap sama)
+
 export interface User {
+  uid: string;    // Tambahkan ini biar match dengan AuthContext
   name: string;
   email: string;
   avatar: string;
 }
 
-// --- PERBAIKAN DI SINI ---
-// Kita ubah return type fungsi-fungsi yang berinteraksi dengan Firebase jadi Promise
 export interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
   tokens: number;
-  
-  // Login & Logout itu async (butuh waktu ke Firebase)
   login: () => Promise<void>; 
   logout: () => Promise<void>;
   
-  // Deduct tokens itu async (cek DB dulu), jadi return Promise<boolean>
-  deductTokens: (amount: number) => Promise<boolean>; 
-  
-  setTokens: (tokens: number) => void; // Ini state lokal react, jadi void biasa aman
-  
-  // Add tokens juga interaksi ke DB, jadi Promise<void>
+  // Kita ganti namanya biar lebih modern sesuai kodingan Supabase tadi
+  useTokens: (amount: number) => Promise<boolean>; 
   addTokens: (amount: number) => Promise<void>; 
+  
+  // Jika lu butuh setTokens manual untuk state lokal (opsional)
+  setTokens: React.Dispatch<React.SetStateAction<number>>;
 }
+
+// ... (sisanya biarkan tetap sama)
 
 export interface TextGenerationResult {
   type: 'text';

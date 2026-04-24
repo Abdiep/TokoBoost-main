@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import { InfoPageContainer } from '@/components/ui/InfoPageContainer';
 
-// 1. IMPORT FIREBASE
-import { db } from '@/services/firebase'; // Sesuaikan path jika beda folder
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+// 1. IMPORT SUPABASE (Ganti Firebase)
+import { supabase } from '@/services/supabase';
 
 export default function ContactPage() {
     // 2. STATE UNTUK INPUT FORM
@@ -21,18 +20,27 @@ export default function ContactPage() {
         setStatus('submitting');
 
         try {
-            // 3. LOGIC KIRIM KE FIREBASE FIRESTORE
-            await addDoc(collection(db, "contactSubmissions"), {
-                name: name,
-                email: email,
-                subject: "Pesan dari TokoBoost Web", // Default subject (opsional)
-                message: message,
-                submittedAt: Timestamp.now(),
-                status: "unread" // Biar nanti bisa difilter di admin dashboard
-            });
+            // 3. LOGIC KIRIM KE SUPABASE
+            const { error } = await supabase
+                .from('contact_submissions')
+                .insert([
+                    {
+                        name: name,
+                        email: email,
+                        subject: "Pesan dari TokoBoost Web", // Default subject
+                        message: message,
+                        // Timestamp 'submitted_at' sudah otomatis di-generate oleh Supabase
+                    }
+                ]);
+
+            // Supabase tidak otomatis melempar error ke block catch, jadi kita lempar manual
+            if (error) {
+                throw error; 
+            }
 
             // Jika Sukses
             setStatus('success');
+            
             // Reset Form
             setName('');
             setEmail('');
@@ -69,8 +77,8 @@ export default function ContactPage() {
                         <input 
                             type="text" 
                             required 
-                            value={name} // Binding Value
-                            onChange={(e) => setName(e.target.value)} // Update State
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 focus:border-pink-500 outline-none text-white transition-all focus:ring-1 focus:ring-pink-500" 
                             placeholder="Nama Anda" 
                             disabled={status === 'submitting'}

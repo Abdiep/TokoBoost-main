@@ -42,7 +42,7 @@ const pollVideoOperation = async (operation: any) => {
 // --- GEMINI API CLIENT INITIALIZATION ---
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-// --- FEATURE: Flyer Generation ---
+// --- FEATURE: Flyer Generation --- 1
 export const generateFlyer = async (image: File, description: string) => {
   const model = 'gemini-2.5-flash-image';
   const imagePart = await fileToGenerativePart(image);
@@ -87,7 +87,7 @@ export const generateFlyer = async (image: File, description: string) => {
   return { imageUrl, caption };
 };
 
-// --- FEATURE: Pre-wedding Image Generation ---
+// --- FEATURE: Pre-wedding Image Generation --- 2
 export const generatePreweddingImage = async (womanImage: File, manImage: File, theme: any, scene: string, outfit: string) => {
     const model = 'gemini-2.5-flash-image';
     const womanImagePart = await fileToGenerativePart(womanImage);
@@ -113,7 +113,7 @@ export const generatePreweddingImage = async (womanImage: File, manImage: File, 
     return `data:${imagePartFromResponse.inlineData.mimeType};base64,${imagePartFromResponse.inlineData.data}`;
 };
 
-// --- FEATURE: SOP Generation ---
+// --- FEATURE: SOP Generation --- 3
 export const generateSop = async (procedure: string) => {
     const model = 'gemini-2.5-flash';
     const prompt = `Buat dokumen SOP formal Bahasa Indonesia untuk: "${procedure}".
@@ -123,7 +123,7 @@ export const generateSop = async (procedure: string) => {
     return response.text;
 };
 
-// --- FEATURE: Job Description Generation ---
+// --- FEATURE: Job Description Generation --- 4
 export const generateJobDesc = async (profession: string) => {
     const model = 'gemini-2.5-flash';
     const prompt = `Buat Job Description formal Bahasa Indonesia untuk posisi: "${profession}".
@@ -133,7 +133,7 @@ export const generateJobDesc = async (profession: string) => {
     return response.text;
 };
 
-// --- FEATURE: Recipe Generation ---
+// --- FEATURE: Recipe Generation --- 5
 export const generateRecipe = async (dish: string) => {
     const textModel = 'gemini-2.5-flash';
     const imageModel = 'gemini-2.5-flash-image';
@@ -152,7 +152,7 @@ export const generateRecipe = async (dish: string) => {
     return { imageUrl, content: recipeResponse.text };
 };
 
-// --- FEATURE: Cartoon Photo Generation ---
+// --- FEATURE: Cartoon Photo Generation --- 6
 export const generateCartoonPhoto = async (image: File, style: string) => {
     const model = 'gemini-2.5-flash-image';
     const imagePart = await fileToGenerativePart(image);
@@ -171,7 +171,7 @@ export const generateCartoonPhoto = async (image: File, style: string) => {
     return `data:${img.inlineData.mimeType};base64,${img.inlineData.data}`;
 };
 
-// --- FEATURE: Studio Photo Generation ---
+// --- FEATURE: Studio Photo Generation --- 7
 export const generateStudioPhoto = async (faceImage: File, templateData: any) => {
     const model = 'gemini-2.5-flash-image';
     const imagePart = await fileToGenerativePart(faceImage);
@@ -190,7 +190,7 @@ export const generateStudioPhoto = async (faceImage: File, templateData: any) =>
     return `data:${img.inlineData.mimeType};base64,${img.inlineData.data}`;
 };
 
-// --- FEATURE: Hook Idea ---
+// --- FEATURE: Hook Idea --- 8
 export const generateHookIdea = async (topic: string) => {
     const model = 'gemini-2.5-flash';
     const prompt = `Ahli viral marketing. Berikan 1 ide visual Hook Video (3 detik) kreatif & sinematik untuk topik: "${topic}". Respon: DESKRIPSI VISUAL (maks 2 kalimat) siap jadi prompt video.`;
@@ -198,7 +198,7 @@ export const generateHookIdea = async (topic: string) => {
     return response.text;
 };
 
-// --- FEATURE: Hook Video & Product Video & Opening (Veo) ---
+// --- FEATURE: Hook Video & Product Video & Opening (Veo) --- 9, 10, 11
 const generateVeoVideo = async (prompt: string, imageFile?: File, aspectRatio: string = '9:16') => {
     const localAi = new GoogleGenAI({ apiKey: API_KEY });
     let imagePayload;

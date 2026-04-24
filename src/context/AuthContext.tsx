@@ -1,19 +1,13 @@
 // src/context/AuthContext.tsx
-'use client'; // <--- WAJIB ADA DI NEXT.JS APP ROUTER
+'use client';
 
 import React, { useState, createContext, useMemo, useCallback, useContext, useEffect } from 'react';
 import { User, AuthContextType } from '../types/types';
-import { INITIAL_TOKENS } from '../constants/constants';
-// Import dari services yang baru kita buat
-import { auth, googleProvider, db } from "../services/firebase"; 
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
+import { supabase } from "../services/supabase";
 
 export const AuthContext = createContext<AuthContextType>(null!);
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,130 +15,127 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [tokens, setTokens] = useState(0);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // User LOGGED IN
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const userSnap = await getDoc(userRef);
+    // Cek sesi saat pertama kali web dibuka
+    const fetchSession = async () => {
+      console.log("1. Mengecek sesi aktif...");
+      const { data: { session } } = await supabase.auth.getSession();
+      handleSession(session);
+    };
 
-        let currentTokens = 0;
-        const today = new Date().toDateString();
+    // Fungsi untuk memproses sesi
+    const handleSession = async (session: any) => {
+      if (session) {
+        console.log("2. Sesi Google ditemukan! Mencari profil di DB...", session.user.id);
+        const { user: supaUser } = session;
 
-        if (userSnap.exists()) {
-          // --- USER LAMA ---
-          const userData = userSnap.data();
-          currentTokens = userData.tokens || 0;
-          
-          let lastRefreshDate = '';
-          if (userData.lastDailyRefresh) {
-             lastRefreshDate = userData.lastDailyRefresh.toDate().toDateString();
-          }
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', supaUser.id)
+          .single();
 
-          if (currentTokens === 0 && lastRefreshDate !== today) {
-            currentTokens = 3; // Daily Bonus
-            await setDoc(userRef, { 
-              tokens: currentTokens,
-              lastDailyRefresh: Timestamp.now(),
-              lastLogin: Timestamp.now(),
-              name: firebaseUser.displayName,
-              avatar: firebaseUser.photoURL
-            }, { merge: true });
-          } else {
-             await setDoc(userRef, { 
-                lastLogin: Timestamp.now(),
-                name: firebaseUser.displayName,
-                avatar: firebaseUser.photoURL
-             }, { merge: true });
-          }
-
-        } else {
-          // --- USER BARU ---
-          currentTokens = INITIAL_TOKENS;
-          await setDoc(userRef, {
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            name: firebaseUser.displayName,
-            avatar: firebaseUser.photoURL,
-            lastLogin: Timestamp.now(),
-            createdAt: Timestamp.now(),
-            tokens: currentTokens,
-          });
+        if (error) {
+          console.error("🚨 ERROR BACA DB:", error.message);
         }
 
-        setUser({
-          name: firebaseUser.displayName || 'Pengguna',
-          email: firebaseUser.email || 'email@tokoboost.com',
-          avatar: firebaseUser.photoURL || 'https://picsum.photos/100/100'
-        });
-        setTokens(currentTokens);
-        setIsLoggedIn(true);
-
+        if (profile) {
+          console.log("3. Profil ditemukan! Login sukses.", profile);
+          setIsLoggedIn(true);
+          setUser({
+            uid: supaUser.id,
+            name: supaUser.user_metadata.full_name || 'User',
+            email: supaUser.email || '',
+            avatar: supaUser.user_metadata.avatar_url || '',
+          });
+          setTokens(profile.tokens);
+        } else {
+          console.log("🚨 Profil tidak ada di DB, memaksa logout...");
+          await supabase.auth.signOut();
+          setIsLoggedIn(false);
+          setUser(null);
+          setTokens(0);
+        }
       } else {
-        // User LOGGED OUT
+        console.log("X. Tidak ada sesi aktif.");
         setIsLoggedIn(false);
         setUser(null);
         setTokens(0);
       }
+    };
+
+    fetchSession();
+
+    // Pantau jika ada perubahan login/logout
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      handleSession(session);
     });
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = useCallback(async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Error saat login Google:", error);
-    }
+    const { error: loginError } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (loginError) console.error("Login Error:", loginError.message);
   }, []);
 
   const logout = useCallback(async () => {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Error saat logout:", error);
-    }
+    await supabase.auth.signOut();
   }, []);
 
-  const deductTokens = useCallback(async (amount: number): Promise<boolean> => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return false;
-    
+  const useTokens = useCallback(async (amount: number): Promise<boolean> => {
     if (tokens >= amount) {
-      setTokens(prev => prev - amount);
-      const userRef = doc(db, "users", currentUser.uid);
-      try {
-          await setDoc(userRef, { tokens: tokens - amount }, { merge: true });
-          return true;
-      } catch (error) {
-          console.error("Gagal update token di DB:", error);
-          setTokens(prev => prev + amount); 
-          alert('Gagal memproses token. Silakan coba lagi.');
-          return false;
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) return false;
+
+      const newAmount = tokens - amount;
+      
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ tokens: newAmount })
+        .eq('id', currentUser.id);
+
+      if (!updateError) {
+        setTokens(newAmount);
+        return true;
       }
+      console.error("Update Error:", updateError.message);
     }
-    alert('Token Anda habis! Top up dulu yuk untuk lanjut berkreasi.');
+    alert('Token Anda habis!');
     return false;
   }, [tokens]);
 
   const addTokens = useCallback(async (amount: number) => {
-    const currentUser = auth.currentUser;
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
     if (!currentUser) return;
-    const newTokens = tokens + amount;
-    setTokens(newTokens); 
-    try {
-      const userRef = doc(db, "users", currentUser.uid);
-      await setDoc(userRef, { tokens: newTokens }, { merge: true });
-    } catch (error) {
-      console.error("Gagal menambahkan token ke DB:", error);
-      setTokens(tokens);
-    }
+
+    const newAmount = tokens + amount;
+    const { error: addError } = await supabase
+      .from('profiles')
+      .update({ tokens: newAmount })
+      .eq('id', currentUser.id);
+
+    if (!addError) setTokens(newAmount);
   }, [tokens]);
 
   const authContextValue = useMemo(() => ({
-    isLoggedIn, user, tokens, login, logout, deductTokens, setTokens, addTokens
-  }), [isLoggedIn, user, tokens, login, logout, deductTokens, addTokens]);
+    isLoggedIn, 
+    user, 
+    tokens, 
+    login, 
+    logout, 
+    useTokens, 
+    addTokens,
+    setTokens 
+  }), [isLoggedIn, user, tokens, login, logout, useTokens, addTokens]);
 
-  return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={authContextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
