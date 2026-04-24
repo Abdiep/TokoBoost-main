@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext'; 
 import { topUpPackages } from '@/constants/constants';
+import { supabase } from '@/services/supabase';
 
 // 1. Tipe Data Hasil Transaksi Midtrans
 interface MidtransResult {
@@ -33,7 +34,7 @@ interface TopUpModalProps {
 }
 
 export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
-    const { user, addTokens } = useAuth(); 
+    const { user, tokens, setTokens, addTokens } = useAuth(); 
     const [isLoading, setIsLoading] = useState(false);
 
     // --- Load Script Midtrans (DIPERBAIKI) ---
@@ -108,12 +109,35 @@ export const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose }) => {
             // Eksekusi Snap
             if (window.snap) {
                 (window.snap as unknown as SnapDispatcher).pay(data.token, {
-                    onSuccess: (result: MidtransResult) => {
+                    onSuccess: async (result: MidtransResult) => {
                         console.log('Payment Success:', result);
-                        if (addTokens) addTokens(pkg.tokens + pkg.bonus);
-                        alert(`Pembayaran Berhasil! ${pkg.tokens + pkg.bonus} Token telah ditambahkan.`);
-                        setIsLoading(false);
-                        onClose();
+                        
+                        // Total token = token reguler + bonus
+                        const totalTokens = pkg.tokens + pkg.bonus;
+                        // Harga dalam angka (misal "35.000" jadi 35000)
+                        const amountRp = parseInt(pkg.price.replace(/\./g, '')); 
+
+                        try {
+                            // Panggil fungsi "Mesin Komisi" di Supabase
+                            const { error } = await supabase.rpc('process_topup_and_commission', {
+                                p_user_id: user.uid,
+                                p_total_tokens: totalTokens,
+                                p_gross_amount: amountRp
+                            });
+
+                            if (error) throw error;
+
+                            // Update saldo di layar UI secara instan (biar gak perlu refresh)
+                            if (setTokens) setTokens(tokens + totalTokens);
+                            
+                            alert(`Pembayaran Berhasil! ${totalTokens} Token telah ditambahkan ke akun Anda.`);
+                        } catch (err) {
+                            console.error("Gagal mencatat komisi ke database:", err);
+                            alert("Pembayaran berhasil, namun terjadi delay sistem. Hubungi admin.");
+                        } finally {
+                            setIsLoading(false);
+                            onClose();
+                        }
                     },
                     onPending: (result: MidtransResult) => {
                         console.log('Payment Pending:', result);

@@ -14,32 +14,64 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [tokens, setTokens] = useState(0);
 
+  // --- FITUR BARU: Penangkap Link Referral dari URL ---
   useEffect(() => {
-    // 1. Cek sesi saat pertama kali web dibuka
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      if (ref) {
+        // Simpan di memori HP
+        localStorage.setItem('tokoboost_ref', ref);
+        
+        // Panggil fungsi SQL untuk nambah hitungan klik di DB
+        supabase.rpc('increment_referral_clicks', { p_code: ref })
+          .then(({ error }) => {
+            if (!error) console.log("Klik referral tercatat!");
+          });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchSession = async () => {
-      console.log("Mengecek sesi aktif...");
       const { data: { session } } = await supabase.auth.getSession();
       handleSession(session);
     };
 
-    // 2. Fungsi utama pemroses sesi & profil
     const handleSession = async (session: any) => {
       if (session) {
         const { user: supaUser } = session;
-
-        // Ambil data dari tabel profiles
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', supaUser.id)
           .single();
 
-        if (error) {
-          console.error("🚨 ERROR BACA DB:", error.message);
-        }
-
         if (profile) {
-          // Profil lengkap, set state login
+          // --- FITUR BARU: Proses Penautan Referral ---
+          const savedRef = localStorage.getItem('tokoboost_ref');
+          // Jika ada kode tersimpan, user belum punya 'referred_by', dan dia bukan ngundang diri sendiri
+          if (savedRef && !profile.referred_by && profile.referral_code !== savedRef) {
+            console.log("Memproses tautan afiliasi...");
+            // Cari ID si pemilik kode referral
+            const { data: refUser } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('referral_code', savedRef)
+              .single();
+
+            if (refUser) {
+              // Tautkan user baru ini ke Bapak Afiliator-nya
+              await supabase
+                .from('profiles')
+                .update({ referred_by: refUser.id })
+                .eq('id', supaUser.id);
+              console.log("Berhasil menautkan ke afiliator!");
+            }
+            // Hapus dari memory biar nggak diproses 2x
+            localStorage.removeItem('tokoboost_ref'); 
+          }
+
           setIsLoggedIn(true);
           setUser({
             uid: supaUser.id,
@@ -49,15 +81,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           setTokens(profile.tokens);
         } else {
-          // Self-Healing: Token ada di browser tapi data di DB kosong -> Paksa Logout
-          console.log("🚨 Profil tidak ada di DB, membersihkan cache...");
           await supabase.auth.signOut();
           setIsLoggedIn(false);
           setUser(null);
           setTokens(0);
         }
       } else {
-        // Tidak ada yang login
         setIsLoggedIn(false);
         setUser(null);
         setTokens(0);
@@ -65,8 +94,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     fetchSession();
-
-    // 3. Listener: Pantau jika ada proses login/logout berjalan di background
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       handleSession(session);
     });
@@ -74,78 +101,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
-  // --- FUNGSI UTAMA ---
-
   const login = useCallback(async () => {
     try {
       const { error: loginError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          // Pastikan redirect selalu kembali ke domain origin yang benar (Localhost/Vercel)
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
+        options: { redirectTo: `${window.location.origin}/dashboard` },
       });
       if (loginError) throw loginError;
     } catch (error: any) {
       console.error("Login Error:", error.message);
-      alert("Gagal terhubung ke Google. Silakan coba lagi.");
     }
   }, []);
 
-  const logout = useCallback(async () => {
-    await supabase.auth.signOut();
-  }, []);
+  const logout = useCallback(async () => {await supabase.auth.signOut();}, []);
 
   const deductTokens = useCallback(async (amount: number): Promise<boolean> => {
     if (tokens >= amount) {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) return false;
-
       const newAmount = tokens - amount;
-      
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ tokens: newAmount })
-        .eq('id', currentUser.id);
-
-      if (!updateError) {
-        setTokens(newAmount);
-        return true;
-      }
-      console.error("Update Error:", updateError.message);
+      const { error } = await supabase.from('profiles').update({ tokens: newAmount }).eq('id', currentUser.id);
+      if (!error) { setTokens(newAmount); return true; }
     }
-    alert('Token Anda habis!');
-    return false;
+    alert('Token Anda habis!'); return false;
   }, [tokens]);
 
   const addTokens = useCallback(async (amount: number) => {
     const { data: { user: currentUser } } = await supabase.auth.getUser();
     if (!currentUser) return;
-
     const newAmount = tokens + amount;
-    const { error: addError } = await supabase
-      .from('profiles')
-      .update({ tokens: newAmount })
-      .eq('id', currentUser.id);
-
-    if (!addError) setTokens(newAmount);
+    const { error } = await supabase.from('profiles').update({ tokens: newAmount }).eq('id', currentUser.id);
+    if (!error) setTokens(newAmount);
   }, [tokens]);
 
-  // Bungkus context value agar tidak re-render berlebihan
   const authContextValue = useMemo(() => ({
-    isLoggedIn, 
-    user, 
-    tokens, 
-    login, 
-    logout, 
-    deductTokens, 
-    addTokens,
-    setTokens 
+    isLoggedIn, user, tokens, login, logout, deductTokens, addTokens, setTokens 
   }), [isLoggedIn, user, tokens, login, logout, deductTokens, addTokens]);
 
-  return (
-    <AuthContext.Provider value={authContextValue}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 };
