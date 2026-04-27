@@ -83,6 +83,22 @@ const nextConfig: NextConfig = {
         destination: '/dashboard/sop',
         permanent: true,
       },
+      // --- TAMBAHAN DARI REPORT GSC ---
+      {
+        source: '/kontak-kami', 
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/tentang-kami', 
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/recipe', 
+        destination: '/dashboard/recipe',
+        permanent: true,
+      },
     ];
   },
 };
