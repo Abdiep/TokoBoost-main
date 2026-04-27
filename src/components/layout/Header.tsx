@@ -30,9 +30,8 @@ export const Header: React.FC = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // 3. LOGIKA SAKTI: Jika URL diawali dengan '/dashboard', header publik ini tidak akan muncul.
-    // Ini otomatis akan menghilangkan double header di halaman affiliate baru lu.
-    if (pathname?.startsWith('/dashboard')) {
+    // LOGIKA SAKTI: Header publik ngilang di dashboard ATAU affiliate
+    if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/affiliate')) {
         return null;
     }
 

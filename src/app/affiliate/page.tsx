@@ -88,6 +88,7 @@ export default function AffiliatePage() {
     const generateCode = async () => { /* Logika generate code */ };
     const copyToClipboard = () => { /* Logika copy */ };
 
+    // --- FUNGSI PROSES TARIK SALDO ---
     const handleWithdraw = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) return;
@@ -104,6 +105,25 @@ export default function AffiliatePage() {
         if (error || !success) {
             alert("Gagal memproses penarikan. Pastikan saldo Anda cukup.");
         } else {
+            // ==========================================
+            // KODINGAN BARU: Tembak Notifikasi Email
+            // ==========================================
+            try {
+                await fetch('/api/notify-wd', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        affiliateId: user.uid,
+                        amount: balance,
+                        gopayNumber: gopayNumber
+                    })
+                });
+            } catch (err) {
+                console.error("Gagal kirim notif email:", err);
+                // Kita diamkan saja errornya biar user nggak keganggu
+            }
+            // ==========================================
+
             alert("Berhasil! Penarikan sedang diproses. Dana akan cair pada tanggal 1 atau 15.");
             
             // Update UI langsung tanpa refresh

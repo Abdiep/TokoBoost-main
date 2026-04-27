@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/privacy',
     '/terms',
     '/disclaimer',
-    '/dashboard/affiliate',
+    '/affiliate',
   ];
 
   // 2. Daftar Tools di Dashboard

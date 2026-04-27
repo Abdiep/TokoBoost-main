@@ -41,7 +41,7 @@ export const Footer = () => {
                         <ul className="space-y-2">
                             <li><Link href="/about" className="text-gray-400 hover:text-pink-500 transition-colors">Tentang Kami</Link></li>
                             <li><Link href="https://blog.tokoboost.com/" className="text-gray-400 hover:text-pink-500 transition-colors">Blog Edukasi</Link></li>
-                            <li><Link href="/dashboard/affiliate" className="text-gray-400 hover:text-pink-500 transition-colors">Program Affiliate</Link></li>
+                            <li><Link href="/affiliate" className="text-gray-400 hover:text-pink-500 transition-colors">Program Affiliate</Link></li>
                             <li><Link href="/contact" className="text-gray-400 hover:text-pink-500 transition-colors">Hubungi Kami</Link></li>
                         </ul>
                     </div>
