@@ -6,7 +6,8 @@ import {
     IconCartoon, IconHookVideo, IconStudioPhoto, IconProductVideo, IconOpeningVideo, 
     IconHotel, IconQuranApp, IconSportSimple 
 } from '@/constants/constants';
-import { AdSenseBanner } from '@/components/ads/AdSenseBanner';
+import { ShopeeNativeAd } from '@/components/ads/ShopeeNativeAd';
+// import { AdSenseBanner } from '@/components/ads/AdSenseBanner';
 
 const FeatureCard: React.FC<{ 
     icon: React.ReactNode; 
@@ -93,7 +94,7 @@ export default function DashboardPage() {
             </div>
             
             <div className="mt-24 max-w-5xl mx-auto border-t border-gray-800 pt-12">
-                <AdSenseBanner adSlot="" style={{ marginBottom: '3rem' }} />
+                <ShopeeNativeAd />
                 <div className="prose prose-invert max-w-none text-gray-400 text-center">
                     <h2 className="text-3xl font-bold text-white mb-8 font-orbitron">Platform Produktivitas AI Terlengkap</h2>
                     <p className="mb-4">TokoBoost hadir sebagai solusi jembatan teknologi bagi jutaan pelaku UMKM di Indonesia.</p>

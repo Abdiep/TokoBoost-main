@@ -4,7 +4,8 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { AdSenseBanner } from '@/components/ads/AdSenseBanner';
+import {ShopeeNativeAd} from '@/components/ads/ShopeeNativeAd';
+// import { AdSenseBanner } from '@/components/ads/AdSenseBanner';
 
 export default function LoginPage() {
     // Kita pakai logic Auth yang sudah ada di project lama kamu
@@ -37,9 +38,7 @@ export default function LoginPage() {
                 
                 {/* Logo Icon */}
                 <div className="flex justify-center mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-pink-500/20">
-                        ⚡
-                    </div>
+                    <img src="/favicon.svg" alt="TokoBoost Logo" className="w-12 h-12" />
                 </div>
 
                 {/* Headline */}
@@ -77,7 +76,7 @@ export default function LoginPage() {
                 {/* Ditaruh di dalam card tapi paling bawah biar rapi */}
                 <div className="w-full overflow-hidden rounded-lg bg-black/20 min-h-[100px] flex items-center justify-center border border-white/5">
                     <div className="scale-90 origin-center">
-                        <AdSenseBanner adSlot="" adFormat="rectangle" />
+                        <ShopeeNativeAd limit={1} />
                     </div>
                 </div>
 

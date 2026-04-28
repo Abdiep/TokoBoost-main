@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { AdSenseBanner } from '../ads/AdSenseBanner';
+import { ShopeeNativeAd } from '../ads/ShopeeNativeAd';
+//import { AdSenseBanner } from '../ads/AdSenseBanner';
 
 interface SEOContentProps {
     title: string;
@@ -22,7 +23,7 @@ export const SEOContentSection: React.FC<SEOContentProps> = ({ title, content, f
             {/* IKLAN DI TENGAH ARTIKEL */}
             <div className="py-4">
                  <span className="text-xs text-gray-600 block text-center mb-1">Sponsored</span>
-                 <AdSenseBanner adSlot="" adFormat="fluid" />
+                 <ShopeeNativeAd />
             </div>
 
             {faq && faq.length > 0 && (

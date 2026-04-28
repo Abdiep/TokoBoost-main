@@ -5,7 +5,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { GenerationResult } from '@/types/types'; 
 import { IconGaleri, IconKamera, IconHapus } from '@/constants/constants'; 
-import { AdSenseBanner } from '../ads/AdSenseBanner'; 
+import { ShopeeNativeAd } from '../ads/ShopeeNativeAd';
+// import { AdSenseBanner } from '../ads/AdSenseBanner'; 
 import { X, CheckCircle2, ChevronRight, UploadCloud } from 'lucide-react'; 
 
 // --- REUSABLE ICONS ---
@@ -237,7 +238,7 @@ const DownloadSuccessModal: React.FC<{ onClose: () => void }> = ({ onClose }) =>
                 <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white"><X size={20} /></button>
             </div>
             <div className="p-6 bg-gray-800">
-                <div className="bg-black/40 rounded-lg overflow-hidden border border-gray-700 min-h-[250px] flex items-center justify-center mb-4"><AdSenseBanner adSlot="" adFormat="rectangle" /></div>
+                <div className="bg-black/40 rounded-lg overflow-hidden border border-gray-700 min-h-[250px] flex items-center justify-center mb-4"><ShopeeNativeAd limit={1}/></div>
                 <button onClick={onClose} className="w-full py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm font-medium">Tutup</button>
             </div>
         </div>
