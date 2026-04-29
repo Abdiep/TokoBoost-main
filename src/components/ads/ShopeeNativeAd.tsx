@@ -94,9 +94,35 @@ export const ShopeeNativeAd: React.FC<ShopeeNativeAdProps> = ({ limit = 4 }) => 
     return () => clearTimeout(timer);
   }, [limit]);
 
-  // 5. Loading State selama produk belum siap (0 detik)
+  // 5. Loading State BARU (Mencegah Layout Shift & Glitch Layar Tumpuk)
   if (displayedProducts.length === 0) {
-    return <div className="min-h-[150px] animate-pulse bg-[#15181e] rounded-xl mt-8 w-full"></div>;
+    const gridClass = limit === 1 ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-4';
+    return (
+      <div className="mt-8 mb-6 border-t border-white/10 pt-6 w-full">
+        {/* Header Skeleton */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="h-4 w-32 bg-gray-800 rounded animate-pulse"></div>
+          <div className="h-4 w-20 bg-gray-800 rounded animate-pulse"></div>
+        </div>
+        
+        {/* Grid Skeleton (Sama persis jumlahnya dengan limit) */}
+        <div className={`grid ${gridClass} gap-4`}>
+          {Array.from({ length: limit }).map((_, index) => (
+            <div key={index} className="bg-[#15181e] p-3 rounded-xl border border-white/5 flex flex-col justify-between h-[230px] animate-pulse">
+              <div>
+                <div className="w-full h-28 bg-gray-800 rounded-lg mb-3"></div>
+                <div className="h-3 w-full bg-gray-700 rounded mb-2"></div>
+                <div className="h-3 w-3/4 bg-gray-700 rounded"></div>
+              </div>
+              <div className="mt-3">
+                <div className="h-4 w-1/2 bg-gray-700 rounded mb-2"></div>
+                <div className="h-3 w-1/3 bg-gray-800 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   const gridClass = limit === 1 ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-4';
