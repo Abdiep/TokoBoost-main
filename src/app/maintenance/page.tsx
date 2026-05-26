@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconGoogle } from '@constants'; // Opsional, sesuaikan icon yang ada
+
 
 export default function MaintenancePage() {
   return (
