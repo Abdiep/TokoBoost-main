@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { 
     IconFlyer, IconPrewedding, IconSOP, IconJob, IconRecipe,
     IconCartoon, IconHookVideo, IconStudioPhoto, IconProductVideo, IconOpeningVideo, 
-    IconHotel, IconQuranApp, IconSportSimple 
+    IconHotel, IconQuranApp, IconSportSimple, 
+    IconReviewVideo // <-- 1. IMPORT IKON BARU DI SINI
 } from '@/constants/constants';
 import { ShopeeNativeAd } from '@/components/ads/ShopeeNativeAd';
 // import { AdSenseBanner } from '@/components/ads/AdSenseBanner';
@@ -18,7 +19,6 @@ const FeatureCard: React.FC<{
     <div className="h-full flex flex-col bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/10 overflow-hidden transform transition-all duration-300 hover:scale-105 hover:border-pink-500/50 hover:shadow-pink-500/20 group">
         <div className="relative h-48 w-full overflow-hidden bg-gray-900">
             {imageUrl ? (
-                // PAKAI IMG SAJA BIAR AMAN SESUAI KODE LAMA
                 // eslint-disable-next-line @next/next/no-img-element
                 <img 
                     src={imageUrl} 
@@ -36,6 +36,13 @@ const FeatureCard: React.FC<{
                     {icon}
                 </div>
             </div>
+            
+            {/* TAMBAHAN LABEL "NEW" KHUSUS UNTUK FITUR REVIEW */}
+            {title === "Affiliate Video Generator" && (
+                <div className="absolute top-3 left-3 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg animate-pulse">
+                    NEW FEATURE
+                </div>
+            )}
         </div>
         <div className="p-5 flex flex-col flex-grow">
             <h3 className="text-xl font-bold font-orbitron gradient-text mb-2">{title}</h3>
@@ -48,8 +55,11 @@ const FeatureCard: React.FC<{
     </div>
 );
 
-// MAPPING MANUAL SESUAI KODE LAMA (TAPI NEXTJS ROUTE)
+// MAPPING MANUAL SESUAI KODE LAMA
 const features = [
+    // 2. TAMBAHKAN FITUR REVIEW DI URUTAN PALING ATAS
+    { title: "Affiliate Video Generator", desc: "Generate video review 24 detik dengan storytelling AI yang natural.", icon: <IconReviewVideo />, path: "/dashboard/review", img: "/imageDashboard/Card-Review.webp" },
+    
     { title: "Flyer Promosi", desc: "Buat flyer promosi profesional untuk produk Anda.", icon: <IconFlyer />, path: "/dashboard/flyer", img: "/imageDashboard/Card-Flyer.webp" },
     { title: "Video Produk", desc: "Generate video produk 5 detik dari gambar.", icon: <IconProductVideo />, path: "/dashboard/video", img: "/imageDashboard/product-Card.webp" },
     { title: "Studio Foto AI", desc: "Hasilkan foto studio berkualitas tinggi dari wajah Anda.", icon: <IconStudioPhoto />, path: "/dashboard/foto", img: "/imageDashboard/Card-Studio.webp" },
@@ -101,6 +111,5 @@ export default function DashboardPage() {
                 </div>
             </div>
         </div>
-
     );
 }

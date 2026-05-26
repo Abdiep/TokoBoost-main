@@ -68,15 +68,15 @@ export const CartoonPhotoGenerator: React.FC = () => {
             setState('loading');
             setError('');
             
+            // Panggil Service
+            const imageUrl = await geminiService.generateCartoonPhoto(image, styleLabel);
+
             // Potong Token
             const success = await deductTokens(cost);
             if (!success) { 
-                setState('idle'); 
-                return; 
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error'); 
             }
-
-            // Panggil Service
-            const imageUrl = await geminiService.generateCartoonPhoto(image, styleLabel);
             
             setResult({ type: 'image', url: imageUrl });
             setState('success');

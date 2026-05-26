@@ -57,16 +57,17 @@ export const JobDescGenerator: React.FC = () => {
             setState('loading');
             setError('');
             
-            // Potong Token
-            const success = await deductTokens(cost);
-            if (!success) {
-                setState('idle');
-                return;
-            }
-
             // Panggil Service
             const text = await geminiService.generateJobDesc(profession);
             
+            // Potong Token
+            const success = await deductTokens(cost);
+            if (!success) {
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return;
+            }
+
             setResult({ 
                 type: 'text', 
                 content: text || "Gagal membuat deskripsi pekerjaan." 

@@ -16,7 +16,7 @@ import { TopUpModal } from '@/components/common/TopUpModal';
 import { ChevronLeft } from 'lucide-react';
 
 export const StudioPhotoGenerator: React.FC = () => {
-    const { deductTokens, tokens, isLoggedIn } = useAuth();
+    const { deductTokens, addTokens, tokens, isLoggedIn } = useAuth();
     
     // -- STATE --
     const [selectedTemplateLabel, setSelectedTemplateLabel] = useState<string>(''); // Kosong = Gallery Mode
@@ -54,16 +54,20 @@ export const StudioPhotoGenerator: React.FC = () => {
 
         try {
             setState('loading'); setError('');
-            const success = await deductTokens(cost);
-            if (!success) { setState('idle'); return; }
-
+            
             const templateData = STUDIO_PHOTO_BACKGROUNDS.find(t => t.label === selectedTemplateLabel) || STUDIO_PHOTO_BACKGROUNDS[0];
             const imageUrl = await geminiService.generateStudioPhoto(image, templateData);
+            const success = await deductTokens(cost);
+            if (!success) { 
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return; 
+            }
             
             setResult({ type: 'image', url: imageUrl });
             setState('success');
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || 'Gagal mengubah foto. Token Anda telah dikembalikan.');
             setState('error');
         }
     };

@@ -42,6 +42,25 @@ const pollVideoOperation = async (operation: any) => {
 // --- GEMINI API CLIENT INITIALIZATION ---
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
+// --- HELPER BARU: Generate Naskah UGC ---
+const generateUgcScript = async (description: string, part: 'hook' | 'dive' | 'cta') => {
+    // Pakai model gemini-2.5-flash sesuai konfigurasi terbaru lu
+    const model = 'gemini-2.5-flash'; 
+    let promptSuffix = "";
+    
+    if (part === 'hook') {
+        promptSuffix = "Buat 1 kalimat narasi (maksimal 10 kata) yang memancing rasa penasaran (Hook) tentang produk ini. Gunakan bahasa testimoni santai khas konten kreator TikTok. Tanpa tanda kutip.";
+    } else if (part === 'dive') {
+        promptSuffix = "Buat 1-2 kalimat narasi (maksimal 15 kata) yang menyoroti detail, tekstur, atau manfaat utama produk ini. Bahasa meyakinkan. Tanpa tanda kutip.";
+    } else if (part === 'cta') {
+        promptSuffix = "Buat 1 kalimat narasi penutup (maksimal 10 kata) yang memberikan kesimpulan dan ajakan bertindak (CTA/cek keranjang). Tanpa tanda kutip.";
+    }
+
+    const prompt = `Informasi produk: "${description}". ${promptSuffix}`;
+    const response = await ai.models.generateContent({ model, contents: prompt });
+    return response.text;
+};
+
 // --- FEATURE: Flyer Generation --- 1
 export const generateFlyer = async (image: File, description: string) => {
   const model = 'gemini-2.5-flash-image';
@@ -241,4 +260,50 @@ export const generateOpeningVideo = async (logo: File | null, channelName: strin
         : `Video opening YouTube 3 detik tema '${theme}'. Animasikan teks: '${channelName}' tipografi keren. 16:9 Landscape.`;
         
     return generateVeoVideo(prompt, logo || undefined, '16:9');
+};
+
+
+// --- FEATURE: UGC Product Review Video (3 Parts, Storyboard Path Version) --- 12
+export const generateUGCReview = async (
+    image: File, 
+    description: string, 
+    part: 'hook' | 'dive' | 'cta',
+    voiceGender: 'male' | 'female'
+) => {
+    try {
+        // 1. Generate Naskah Skrip
+        const voiceoverScript = await generateUgcScript(description, part);
+        console.log(`[Review Part: ${part}] Script: ${voiceoverScript}`);
+
+        const genderText = voiceGender === 'male' ? 'Pria/Laki-laki' : 'Wanita/Perempuan';
+        
+        // 2. PROMPT MATRIX (Terinspirasi dari Flyer Generator lu)
+        const finalPrompt = `Anda adalah Sutradara Video Iklan AI profesional. 
+        Tugas Anda adalah merender video 8 detik (Aspect Ratio 9:16) yang merupakan BABAK [${part.toUpperCase()}] dari sebuah rangkaian video UGC yang saling terkait antara HOOK, DIVE, dan CTA menjadi satu kesatuan video.
+        
+        ANALYSIS FIRST: Baca deskripsi "${description}" untuk menentukan kategori produk, lalu pilih SATU jalur (PATH) di bawah ini.
+        
+        PATH A: PRODUK YANG DIPAKAI (Pakaian, Sepatu, Tas, Jam Tangan, Skincare di wajah)
+        - Jika Babak HOOK: Animasikan model/orang dalam gambar mulai bergerak memamerkan produk secara natural (misal: berjalan pelan, berpose santai).
+        - Jika Babak DIVE: Fokuskan kamera (zoom-in/macro) ke material, tekstur, jahitan, atau detail produk yang sedang dipakai. JANGAN mengubah subjek modelnya.
+        - Jika Babak CTA: Tampilkan pose akhir model secara utuh (full-body/half-body) tersenyum atau menunjuk ke arah kamera dengan gaya meyakinkan.
+        
+        PATH B: PRODUK BERDIRI SENDIRI (Makanan, Minuman, Elektronik, Botol, Kemasan)
+        - Jika Babak HOOK: Berikan efek kamera slow zoom-in yang dramatis ke arah produk di lingkungan estetik.
+        - Jika Babak DIVE: Tampilkan interaksi dinamis dengan produk (misal: makanan dibelah ada uap, minuman dituang, atau kamera panning mengitari detail produk).
+        - Jika Babak CTA: Tampilkan produk utuh di tengah layar dengan efek kamera perlahan menjauh (pull-back) dan pencahayaan mewah.
+        
+        UNIVERSAL RULES:
+        1. Saat ini Anda HANYA MENGHASILKAN VISUAL UNTUK BABAK: "${part.toUpperCase()}". Patuhi aksi visual sesuai PATH yang dipilih untuk babak ini.
+        2. KONSISTENSI MUTLAK: Pertahankan warna, bentuk asli produk, dan wajah/tubuh model (jika ada) dari GAMBAR REFERENSI 100%.
+        3. No Text/Watermarks.
+        
+        NARRATION (AUDIO): Narasi video dibacakan oleh suara ${genderText} Indonesia, dengan gaya kreator UGC: "${voiceoverScript}".`;
+
+        // 3. Panggil Veo Video dengan gambar referensi tunggal
+        return await generateVeoVideo(finalPrompt, image, '9:16');
+    } catch (err: any) {
+        console.error("Gagal generate UGC Review:", err);
+        throw new Error(err.message || "Gagal membuat video review.");
+    }
 };

@@ -70,19 +70,20 @@ export const OpeningVideoGenerator: React.FC = () => {
             setError('');
             setResult(null);
 
-            // Potong Token
-            const success = await deductTokens(cost);
-            if (!success) {
-                setState('idle');
-                return;
-            }
-
             // Panggil Service
             const videoUrl = await geminiService.generateOpeningVideo(
                 inputType === 'logo' ? logo : null,
                 channelName,
                 theme
             );
+
+            // Potong Token
+            const success = await deductTokens(cost);
+            if (!success) {
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return;
+            }
 
             setResult({ type: 'video', url: videoUrl || "" });
             setState('success');

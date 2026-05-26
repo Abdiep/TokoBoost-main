@@ -18,7 +18,7 @@ import { TopUpModal } from '@/components/common/TopUpModal';
 
 export const RecipeGenerator: React.FC = () => {
     // const router = useRouter(); // <-- Hapus
-    const { deductTokens, tokens, isLoggedIn } = useAuth();
+    const { deductTokens, addTokens, tokens, isLoggedIn } = useAuth();
     const [dish, setDish] = useState('');
     const [state, setState] = useState<GenerationState>('idle');
     const [error, setError] = useState('');
@@ -52,22 +52,19 @@ export const RecipeGenerator: React.FC = () => {
         try {
             setState('loading');
             setError('');
-            const success = await deductTokens(cost);
-            if (!success) { setState('idle'); return; }
 
             const { imageUrl, content } = await geminiService.generateRecipe(dish);
-            // Gabungkan hasil jadi satu object visual (Image with caption text)
-            // Tapi karena OutputDisplay handle salah satu, kita akali:
-            // Kita tampilin Teks, tapi URL gambarnya kita selipkan di properti lain kalau perlu.
-            // Atau lebih baik: Kita update OutputDisplay di masa depan untuk handle Mixed Content.
-            // Untuk sekarang: Kita return Image-nya, teksnya masuk caption (walaupun panjang).
             
-            // ATAU: Kita ubah UI RecipeGenerator biar menampilkan 2 OutputDisplay manual?
-            // Demi simplicity migrasi, kita tampilin Image-nya, Resepnya di bawah gambar.
+            const success = await deductTokens(cost);
+            if (!success) { 
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return;
+            }
+
             setResult({ type: 'image', url: imageUrl, caption: content });
             setState('success');
-        } catch (err: any) {
-            console.error(err);
+        } catch (err: any) {        
             setError(err.message || 'Gagal membuat resep.');
             setState('error');
         }

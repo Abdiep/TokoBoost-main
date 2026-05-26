@@ -80,15 +80,16 @@ export const HookVideoGenerator: React.FC = () => {
             setError('');
             setResult(null);
 
+            // Panggil Service
+            const videoUrl = await geminiService.generateHookVideo(theme);
+
             // Potong Token
             const success = await deductTokens(cost);
             if (!success) { 
-                setState('idle'); 
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
                 return; 
             }
-
-            // Panggil Service
-            const videoUrl = await geminiService.generateHookVideo(theme);
             
             setResult({ type: 'video', url: videoUrl });
             setState('success');

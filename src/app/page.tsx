@@ -7,13 +7,9 @@ import { Footer } from '@/components/layout/Footer';
 import { 
     IconFlyer, IconProductVideo, IconHookVideo, 
     IconStudioPhoto, IconPrewedding, IconCartoon, 
-    IconSOP,
-    IconJob,
-    IconRecipe,
-    IconOpeningVideo,
-    IconSportSimple,
-    IconQuranApp,
-    IconHotel
+    IconSOP, IconJob, IconRecipe, IconOpeningVideo,
+    IconSportSimple, IconQuranApp, IconHotel,
+    IconReviewVideo // <-- IMPORT IKON BARU
 } from '@/constants/constants';
 
 // --- 1. HERO SECTION ---
@@ -22,15 +18,17 @@ const HeroSection = () => (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-600/20 rounded-full blur-[120px] -z-10 animate-pulse"></div>
         
         <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-orbitron text-white leading-tight tracking-tight drop-shadow-2xl">
+
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold font-orbitron text-white leading-tight tracking-tight drop-shadow-2xl mt-0">
                 Revolusi Bisnis UMKM Dengan  <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-orange-500">
                     Kecerdasan AI
                 </span>
             </h1>
 
+            {/* SUB-HEADLINE DIUPDATE */}
             <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                Buat foto produk profesional, video promosi sinematik, hingga dokumen legal bisnis hanya dalam hitungan detik dengan kekuatan AI.
+                Tingkatkan konversi jualan dan komisi affiliate Anda. Sulap 1 foto produk menjadi gambar promosi hingga <strong>Video Review 24 Detik</strong> bersuara natural. Semua otomatis dengan AI, tanpa perlu sewa model atau pusing mikir skrip!
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -101,6 +99,13 @@ const WhySection = () => (
                         <h3 className="text-xl font-bold text-white mb-2">Mudah Dipakai</h3>
                         <p className="text-sm text-gray-400">Tanpa skill coding atau desain, semua bisa pakai TokoBoost.</p>
                     </div>
+                    
+                    {/* CARD BARU: FACELESS VIDEO REVIEW (Span 2 Kolom) */}
+                    <div className="glass-card p-6 border-l-4 border-l-red-500 hover:scale-105 transition-transform sm:col-span-2 bg-gradient-to-r from-red-900/10 to-transparent">
+                        <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center text-2xl mb-4">🎬</div>
+                        <h3 className="text-xl font-bold text-white mb-2">Faceless Video Review</h3>
+                        <p className="text-sm text-gray-400">Bikin video UGC (User Generated Content) siap FYP. AI kami akan membuatkan skrip storytelling, voiceover natural, dan menganimasikan foto produk Anda secara sinematik dalam 3 babak.</p>
+                    </div>
                 </div>
 
             </div>
@@ -111,6 +116,7 @@ const WhySection = () => (
 // --- 3. FEATURES SECTION ---
 const FeaturesPreview = () => {
     const features = [
+        { icon: <IconReviewVideo />, title: "Affiliate Video", desc: "Generate video review 24 detik dengan storytelling AI yang natural." }, // <-- FITUR BARU DI ATAS
         { icon: <IconFlyer />, title: "Flyer & Foto Produk", desc: "Ubah foto Produk Jualan jadi foto profesional yang siap upload ke e-commerce." },
         { icon: <IconProductVideo />, title: "Video Promosi", desc: "Bikin foto produkmu menjadi video promosi 5 detik otomatis." },
         { icon: <IconSOP />, title: "SOP Generator", desc: "Buat Standar Operasional Prosedur (SOP) dengan instan dan terstruktur." },
@@ -137,7 +143,7 @@ const FeaturesPreview = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((f, idx) => (
                         <div key={idx} className="glass-card p-8 flex flex-col items-center text-center group hover:border-pink-500/30 transition-all duration-300 hover:-translate-y-2">
-                            <div className="forced-icon-size shadow-lg shadow-pink-500/10 group-hover:scale-110 transition-transform duration-300 mb-6">
+                            <div className="forced-icon-size shadow-lg shadow-pink-500/10 group-hover:scale-110 transition-transform duration-300 mb-6 text-pink-400">
                                 {f.icon}
                             </div>
                             
@@ -151,16 +157,15 @@ const FeaturesPreview = () => {
     );
 };
 
-// --- 4. BLOG / INSIGHT SECTION (BARU!) ---
+// --- 4. BLOG / INSIGHT SECTION ---
 const BlogPreviewSection = () => {
-    // Data Dummy Blog (Nanti bisa diganti fetch dari API)
     const blogPosts = [
         {
             category: "Edukasi Bisnis",
             title: "5 Strategi Digital Marketing untuk UMKM di 2026",
             excerpt: "Pelajari cara memanfaatkan AI untuk menjangkau jutaan pelanggan baru tanpa budget iklan yang besar.",
             date: "14 Feb 2026",
-            link: "https://blog.tokoboost.com/blog/rahasia-copywriting-flyer", // Contoh link ke blog
+            link: "https://blog.tokoboost.com/blog/rahasia-copywriting-flyer",
             color: "from-blue-500 to-cyan-500"
         },
         {
@@ -183,11 +188,9 @@ const BlogPreviewSection = () => {
 
     return (
         <section className="py-24 bg-[#0a0c10] relative">
-            {/* Background Glow */}
             <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-[#0f1115] to-transparent pointer-events-none"></div>
 
             <div className="container mx-auto px-4 relative z-10">
-                {/* Header Section Blog */}
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                     <div className="max-w-2xl">
                         <h2 className="text-3xl md:text-5xl font-bold font-orbitron text-white mb-4">
@@ -205,7 +208,6 @@ const BlogPreviewSection = () => {
                     </Link>
                 </div>
 
-                {/* Grid Blog Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {blogPosts.map((post, idx) => (
                         <Link href={post.link} key={idx} className="group relative block h-full">
@@ -252,8 +254,6 @@ export default function Home() {
             <HeroSection />
             <WhySection />
             <FeaturesPreview />
-            
-            {/* Bagian Blog Baru Disisipkan Disini */}
             <BlogPreviewSection />
             
             {/* CTA Section */}

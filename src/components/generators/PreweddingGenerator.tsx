@@ -70,11 +70,16 @@ export const PreweddingGenerator: React.FC = () => {
 
         try {
             setState('loading'); setError('');
-            const success = await deductTokens(cost);
-            if (!success) { setState('idle'); return; }
 
             const selectedThemeObj = PREWEDDING_THEMES.find((t: any) => t.label === selectedThemeLabel);
             const imageUrl = await geminiService.generatePreweddingImage(womanImage, manImage, selectedThemeObj, scene, outfit);
+            
+            const success = await deductTokens(cost);
+            if (!success) {
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return;
+                }
             
             setResult({ type: 'image', url: imageUrl });
             setState('success');

@@ -63,15 +63,16 @@ export const FlyerGenerator: React.FC = () => {
             setState('loading');
             setError('');
             
+            // Panggil AI Service
+            const { imageUrl, caption } = await geminiService.generateFlyer(image, description);
+
             // Potong Token
             const success = await deductTokens(cost);
             if (!success) {
-                setState('idle');
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
                 return;
             }
-
-            // Panggil AI Service
-            const { imageUrl, caption } = await geminiService.generateFlyer(image, description);
             
             setResult({ 
                 type: 'image', 

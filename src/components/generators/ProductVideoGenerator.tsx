@@ -17,7 +17,7 @@ import { TopUpModal } from '@/components/common/TopUpModal';
 
 export const ProductVideoGenerator: React.FC = () => {
     // const router = useRouter(); // <-- Hapus
-    const { deductTokens, tokens, isLoggedIn } = useAuth();
+    const { deductTokens, addTokens, tokens, isLoggedIn } = useAuth();
 
     const [image, setImage] = useState<File | null>(null);
     const [state, setState] = useState<GenerationState>('idle');
@@ -58,8 +58,13 @@ export const ProductVideoGenerator: React.FC = () => {
             const videoUrl = await geminiService.generateProductVideo(image);
             setResult({ type: 'video', url: videoUrl });
             setState('success');
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Gagal membuat video produk.');
+        } catch (err: any) {
+            console.error(err);
+            
+            // 2. REFUND TOKEN KALAU ERROR DI SINI!
+            await addTokens(cost);
+            
+            setError(err.message || 'Gagal mengubah video. Token Anda telah dikembalikan.');
             setState('error');
         }
     };

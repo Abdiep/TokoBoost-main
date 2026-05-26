@@ -19,7 +19,7 @@ import { TopUpModal } from '@/components/common/TopUpModal';
 
 export const SopGenerator: React.FC = () => {
     // const router = useRouter(); // <-- Hapus
-    const { deductTokens, tokens, isLoggedIn } = useAuth();
+    const { deductTokens, addTokens, tokens, isLoggedIn } = useAuth();
     const [procedure, setProcedure] = useState('');
     const [state, setState] = useState<GenerationState>('idle');
     const [error, setError] = useState('');
@@ -53,15 +53,20 @@ export const SopGenerator: React.FC = () => {
         try {
             setState('loading');
             setError('');
-            const success = await deductTokens(cost);
-            if (!success) { setState('idle'); return; }
-
             const text = await geminiService.generateSop(procedure);
+            
+            const success = await deductTokens(cost);
+            if (!success) { 
+                setError('Sistem sibuk atau saldo tidak mencukupi saat proses akhir.');
+                setState('error');
+                return;
+            }
+
             // FIX: Pastikan text tidak undefined
             setResult({ type: 'text', content: text || "Gagal menghasilkan teks." });
             setState('success');
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: any) {          
+            setError(err.message || 'Gagal membuat SOP.');
             setState('error');
         }
     };
